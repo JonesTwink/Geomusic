@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.azhukovski.geomusic.MainActivity">
+
+    <ImageView
+        android:scaleType="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/background"
+        android:id="@+id/imageView3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorSongBar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
+        <ImageView
+            app:srcCompat="@drawable/headphones_apollo"
+            android:layout_marginLeft="10dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:gravity="center_vertical"
+            android:id="@+id/imageView" />
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/tv_nowListetingTo"
+               android:text="Слушает сейчас..."
+               android:layout_marginTop="10dp"
+               android:layout_marginLeft="5dp"
+               android:textColor="@android:color/darker_gray"
+               android:textSize="12sp" />
+           <TextView
+               android:text="Альбом: Curtis"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/tv_currentAlbum"
+               android:layout_below="@+id/tv_currentSong"
+               android:layout_marginLeft="5dp"
+               android:textColor="?android:attr/colorButtonNormal" />
+
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="50 Cent - Fully loaded clip"
+               android:id="@+id/tv_currentSong"
+               android:textAppearance="@style/TextAppearance.AppCompat"
+               android:layout_marginLeft="5dp"
+               android:layout_below="@+id/tv_nowListetingTo"
+               android:textColor="@android:color/background_light"
+               android:textColorHighlight="@android:color/background_dark"
+               android:textSize="18sp"
+               android:lines="1"
+               android:singleLine="true"
+               android:ellipsize="marquee"
+               android:fadingEdge="horizontal"
+               android:marqueeRepeatLimit="marquee_forever"
+               android:scrollHorizontally="true"
+               />
+
+       </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:text="Intent info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_intentInfo"
+        android:layout_marginStart="67dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
