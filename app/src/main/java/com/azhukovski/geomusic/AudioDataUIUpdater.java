@@ -22,12 +22,12 @@ public class AudioDataUIUpdater {
         this.tv_currentSong.setSelected(true);
     }
 
-    private void setAudioTextViewsInfo(String artist,String track,String album){
+    private void setAudioTextViewsInfo(String artist, String track, String album){
         tv_currentSong.setText(artist + " - " + track);
         tv_currentAlbum.setText("Альбом: " + album);
     }
 
-    public void updateAudioInfo(String artist,String track,String album, boolean isPlaying){
+    public void updateAudioInfo(String artist, String track, String album, boolean isPlaying){
         if (isPlaying) {
             setAudioTextViewsInfo(artist, track, album);
             setUserListeningStatus(true);

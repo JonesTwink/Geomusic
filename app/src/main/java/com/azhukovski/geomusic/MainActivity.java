@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         audioData = new AudioDataFetcher(this);
 
-        IntentFilter audioPlayerIntentFilter = audioData.setAudioPlayerIntentFilters();
+        IntentFilter audioPlayerIntentFilter = IntentUtils.setAudioPlayerIntentFilters();
         registerReceiver(mReceiver, audioPlayerIntentFilter);
 
     }
