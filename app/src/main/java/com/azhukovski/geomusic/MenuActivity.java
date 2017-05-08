@@ -18,37 +18,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
-    private ListView mDrawerList;
-    private ArrayAdapter<String> mAdapter;
+public class MenuActivity extends AppCompatActivity {
+    protected ListView mDrawerList;
+    protected ArrayAdapter<String> mAdapter;
 
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private String mActivityTitle;
+    protected ActionBarDrawerToggle mDrawerToggle;
+    protected DrawerLayout mDrawerLayout;
+    protected String mActivityTitle;
 
-    private AudioDataFetcher audioData;
-
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            audioData.processBroadcastRecieverIntent(context, intent);
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_main);
 
-        audioData = new AudioDataFetcher(this);
-
-        IntentFilter audioPlayerIntentFilter = IntentUtils.setAudioPlayerIntentFilters();
-        registerReceiver(mReceiver, audioPlayerIntentFilter);
-
         fillMenu();
-
         setupDrawer();
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -67,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else
-                    Toast.makeText(MainActivity.this, "Item "+id, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MenuActivity.this, "Item "+id, Toast.LENGTH_SHORT).show();
             }
         });
     }

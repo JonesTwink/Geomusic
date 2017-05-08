@@ -1,24 +1,28 @@
 package com.azhukovski.geomusic;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Menu;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+
+public class UserListActivity extends AppCompatActivity {
     private ListView mDrawerList;
     private ArrayAdapter<String> mAdapter;
 
@@ -26,31 +30,60 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
 
-    private AudioDataFetcher audioData;
+    private ListView usersList;
+    private ArrayAdapter<User> usersAdapter;
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            audioData.processBroadcastRecieverIntent(context, intent);
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        setContentView(R.layout.activity_main);
-
-        audioData = new AudioDataFetcher(this);
-
-        IntentFilter audioPlayerIntentFilter = IntentUtils.setAudioPlayerIntentFilters();
-        registerReceiver(mReceiver, audioPlayerIntentFilter);
+        setContentView(R.layout.activity_user_list);
 
         fillMenu();
-
         setupDrawer();
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        usersList = (ListView)findViewById(R.id.usersList);
+        fillUserList();
+        usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                User user = (User) parent.getItemAtPosition(position);
+                Intent intent = new Intent(view.getContext(), RemoteUserDetailsActivity.class);
+                intent.putExtra("com.azhukovski.geomusic.User", user);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void fillUserList() {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url ="http://a-leasing.by/assets/geomusic-srv/geoget.php";
+
+        final Context activityContext = this.getBaseContext();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        User[] users = gson.fromJson(response.toString(), User[].class);
+
+                        usersAdapter = new ArrayAdapter<User>(activityContext, android.R.layout.simple_list_item_1, users);
+                        usersList.setAdapter(usersAdapter);
+                        System.out.println(users);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        });
+        queue.add(stringRequest);
+
+        //User[] users = {new User("1", "admin", "student", "боря моисеев - голубая луна","неизвестный альбом", "23.32", "21.32"), new User("2", "maestro", "I'm smooth", "twenty one pilots - heavydirtysoul","blurryface", "23.32", "21.32")};
+
+
     }
 
     protected void fillMenu() {
@@ -62,12 +95,12 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (id == 1){
-                    Intent intent = new Intent(view.getContext(), UserListActivity.class);
+                if (id == 0){
+                    Intent intent = new Intent(view.getContext(), MainActivity.class);
                     startActivity(intent);
                 }
                 else
-                    Toast.makeText(MainActivity.this, "Item "+id, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserListActivity.this, "Item "+id, Toast.LENGTH_SHORT).show();
             }
         });
     }
