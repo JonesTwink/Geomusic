@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 public class User implements Parcelable {
-    private String id;
+    public String id;
     public String login;
     public String info;
     public String song;
@@ -19,6 +19,8 @@ public class User implements Parcelable {
     @Override
     public String toString(){
         return this.login;
+    }
+    public User(){
     }
     public User(String id, String login, String info, String song,String album, String latitude, String longitude){
         this.id = id;

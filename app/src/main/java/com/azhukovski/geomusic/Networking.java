@@ -5,7 +5,7 @@ package com.azhukovski.geomusic;
  */
 
 public class Networking {
-    public static final String BASE_API_URL = "a-leasing.by/assets/geomusic-srv/";
+    public static final String BASE_API_URL = "http://a-leasing.by/assets/geomusic-srv/";
 
 
 

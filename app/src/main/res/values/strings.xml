@@ -2,4 +2,5 @@
     <string name="app_name">Geomusic</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="base_api_url">http://37.17.42.245/assets/geomusic-srv/</string>
 </resources>

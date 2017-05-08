@@ -55,11 +55,17 @@ public class UserListActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        fillUserList();
+
+    }
 
     private void fillUserList() {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://a-leasing.by/assets/geomusic-srv/geoget.php";
+        String url = Networking.BASE_API_URL + "geoget.php";
 
         final Context activityContext = this.getBaseContext();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -80,10 +86,6 @@ public class UserListActivity extends AppCompatActivity {
             }
         });
         queue.add(stringRequest);
-
-        //User[] users = {new User("1", "admin", "student", "боря моисеев - голубая луна","неизвестный альбом", "23.32", "21.32"), new User("2", "maestro", "I'm smooth", "twenty one pilots - heavydirtysoul","blurryface", "23.32", "21.32")};
-
-
     }
 
     protected void fillMenu() {
