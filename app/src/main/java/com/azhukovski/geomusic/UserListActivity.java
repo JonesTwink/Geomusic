@@ -58,8 +58,8 @@ public class UserListActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+        mDrawerLayout.closeDrawers();
         fillUserList();
-
     }
 
     private void fillUserList() {
@@ -99,10 +99,17 @@ public class UserListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (id == 0){
                     Intent intent = new Intent(view.getContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
-                else
-                    Toast.makeText(UserListActivity.this, "Item "+id, Toast.LENGTH_SHORT).show();
+                else if (id == 1){
+                    mDrawerLayout.closeDrawers();
+                }
+                else if (id == 2){
+                    Intent intent = new Intent(UserListActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
     }

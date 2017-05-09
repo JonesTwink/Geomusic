@@ -10,7 +10,7 @@ import android.os.Parcelable;
 public class User implements Parcelable {
     public String id;
     public String login;
-    public String info;
+    public String about;
     public String song;
     public String album;
     public String latitude;
@@ -22,10 +22,10 @@ public class User implements Parcelable {
     }
     public User(){
     }
-    public User(String id, String login, String info, String song,String album, String latitude, String longitude){
+    public User(String id, String login, String about, String song,String album, String latitude, String longitude){
         this.id = id;
         this.login = login;
-        this.info = info;
+        this.about = about;
         this.song = song;
         this.album = album;
         this.latitude = latitude;
@@ -38,7 +38,7 @@ public class User implements Parcelable {
         // the order needs to be the same as in writeToParcel() method
         this.id = data[0];
         this.login = data[1];
-        this.info = data[2];
+        this.about = data[2];
         this.song = data[3];
         this.album = data[4];
         this.latitude = data[5];
@@ -54,7 +54,7 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[] {this.id,
                 this.login,
-                this.info,
+                this.about,
                 this.song,
                 this.album,
                 this.latitude,

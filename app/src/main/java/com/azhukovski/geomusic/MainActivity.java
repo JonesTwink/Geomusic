@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mDrawerList;
     private ArrayAdapter<String> mAdapter;
 
+
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
@@ -52,11 +53,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             audioData.processBroadcastRecieverIntent(context, intent);
-            if (currentUser != null){
-                currentUser.song = audioData.getSong();
-                currentUser.album = audioData.getAlbum();
-                updateCurrentUserData();
+            if (currentUser == null){
+                Bundle bundle = getIntent().getExtras();
+                currentUser = bundle.getParcelable("com.azhukovski.geomusic.User");
             }
+            currentUser.song = audioData.getSong();
+            currentUser.album = audioData.getAlbum();
+            updateCurrentUserData();
         }
     };
 
@@ -66,18 +69,24 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(location);
             TextView text = (TextView)findViewById(R.id.tv_intentInfo);
             text.setText(location.toString());
-            if (currentUser != null){
-                currentUser.latitude = Double.toString(location.getLatitude());
-                currentUser.longitude =  Double.toString(location.getLongitude());
-                updateCurrentUserData();
+            if (currentUser == null){
+                Bundle bundle = getIntent().getExtras();
+                currentUser = bundle.getParcelable("com.azhukovski.geomusic.User");
             }
+            currentUser.latitude = Double.toString(location.getLatitude());
+            currentUser.longitude =  Double.toString(location.getLongitude());
+            updateCurrentUserData();
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {}
 
-        public void onProviderEnabled(String provider) {}
+        public void onProviderEnabled(String provider) {
+            Toast.makeText(MainActivity.this, "GPS включен.", Toast.LENGTH_SHORT).show();
+        }
 
-        public void onProviderDisabled(String provider) {}
+        public void onProviderDisabled(String provider) {
+            Toast.makeText(MainActivity.this, "GPS выключен. Влючите его, чтобы начать использовать приложение.", Toast.LENGTH_SHORT).show();
+        }
     };
 
     @Override
@@ -113,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             catch (SecurityException e){
-                Toast.makeText(MainActivity.this, "Разрешите использование определения местоположения.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Разрешите определение местоположения.", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -121,15 +130,41 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         }
         catch (SecurityException e){
-            Toast.makeText(MainActivity.this, "Разрешите использовать GPS", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Не удалось подписаться на обновления GPS", Toast.LENGTH_SHORT).show();
+        }
+
+        Toast.makeText(MainActivity.this, "CREATE", Toast.LENGTH_SHORT).show();
+        resetUserFields();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mDrawerLayout.closeDrawers();
+        reloginIfNeeded();
+        resetUserFields();
+        Toast.makeText(MainActivity.this, "RESUME", Toast.LENGTH_SHORT).show();
+    }
+    private  void setCurrentUserInfo(){
+        if (currentUser == null) {
+            Bundle bundle = getIntent().getExtras();
+            currentUser = bundle.getParcelable("com.azhukovski.geomusic.User");
         }
     }
 
-    private  void setCurrentUserInfo(){
-        if (currentUser == null)
-            currentUser = new User("1", "admin", "Hello, I'm first here.", audioData.getAlbum(), audioData.getSong(), "", "");
+    private  void reloginIfNeeded(){
+        if (getIntent().hasExtra("com.azhukovski.geomusic.User")){
+            Bundle bundle = getIntent().getExtras();
+            currentUser = bundle.getParcelable("com.azhukovski.geomusic.User");
+        }
     }
+    private void resetUserFields(){
+        final TextView tv_username = (TextView)findViewById(R.id.tv_username);
+        final TextView tv_aboutUser = (TextView)findViewById(R.id.tv_aboutUser);
+        tv_username.setText(currentUser.login);
+        tv_aboutUser.setText(currentUser.about);
 
+    }
     private void updateCurrentUserData() {
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -178,10 +213,17 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (id == 1){
                     Intent intent = new Intent(view.getContext(), UserListActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
-                else
-                    Toast.makeText(MainActivity.this, "Item "+id, Toast.LENGTH_SHORT).show();
+                else if (id == 0){
+                    mDrawerLayout.closeDrawers();
+                }
+                else if (id == 2){
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
     }

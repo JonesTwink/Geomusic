@@ -33,7 +33,7 @@ public class RemoteUserDetailsActivity extends AppCompatActivity implements OnMa
         tv_login.setText(user.login);
 
         TextView tv_info = (TextView) this.findViewById(R.id.tv_info);
-        tv_info.setText(user.info);
+        tv_info.setText(user.about);
 
         TextView tv_currentSong = (TextView) this.findViewById(R.id.tv_currentSong);
         tv_currentSong.setText(user.song);
