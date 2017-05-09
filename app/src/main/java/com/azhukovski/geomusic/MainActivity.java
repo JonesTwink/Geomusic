@@ -67,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             System.out.println(location);
-            TextView text = (TextView)findViewById(R.id.tv_intentInfo);
-            text.setText(location.toString());
             if (currentUser == null){
                 Bundle bundle = getIntent().getExtras();
                 currentUser = bundle.getParcelable("com.azhukovski.geomusic.User");
@@ -130,10 +128,9 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         }
         catch (SecurityException e){
-            Toast.makeText(MainActivity.this, "Не удалось подписаться на обновления GPS", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Не удалось подписаться на обновления GPS. Включите GPS в настройках.", Toast.LENGTH_SHORT).show();
         }
 
-        Toast.makeText(MainActivity.this, "CREATE", Toast.LENGTH_SHORT).show();
         resetUserFields();
     }
 
@@ -143,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawers();
         reloginIfNeeded();
         resetUserFields();
-        Toast.makeText(MainActivity.this, "RESUME", Toast.LENGTH_SHORT).show();
     }
     private  void setCurrentUserInfo(){
         if (currentUser == null) {
@@ -214,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 if (id == 1){
                     Intent intent = new Intent(view.getContext(), UserListActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("com.azhukovski.geomusic.User", currentUser);
                     startActivity(intent);
                 }
                 else if (id == 0){

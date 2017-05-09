@@ -35,10 +35,5 @@ public class AudioDataFetcher {
     private void showDebugInfo(Intent intent){
         String action = intent.getAction();
         String cmd = intent.getStringExtra("command");
-
-        String debugInfo = "COMMAND"+ cmd + "; ACTION" + action + "; EXTRAS: " + intent.getExtras().toString();
-
-        uiUpdater.showDebugInfo(debugInfo);
-
     }
 }

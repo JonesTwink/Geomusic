@@ -22,6 +22,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ListIterator;
+
 public class UserListActivity extends AppCompatActivity {
     private ListView mDrawerList;
     private ArrayAdapter<String> mAdapter;
@@ -32,7 +36,7 @@ public class UserListActivity extends AppCompatActivity {
 
     private ListView usersList;
     private ArrayAdapter<User> usersAdapter;
-
+    private User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,11 @@ public class UserListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        if (getIntent().hasExtra("com.azhukovski.geomusic.User")){
+            Bundle bundle = getIntent().getExtras();
+            currentUser = bundle.getParcelable("com.azhukovski.geomusic.User");
+        }
+
         usersList = (ListView)findViewById(R.id.usersList);
         fillUserList();
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -51,6 +60,7 @@ public class UserListActivity extends AppCompatActivity {
                 User user = (User) parent.getItemAtPosition(position);
                 Intent intent = new Intent(view.getContext(), RemoteUserDetailsActivity.class);
                 intent.putExtra("com.azhukovski.geomusic.User", user);
+                intent.putExtra("com.azhukovski.geomusic.currentUser", currentUser);
                 startActivity(intent);
             }
         });
@@ -59,6 +69,11 @@ public class UserListActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         mDrawerLayout.closeDrawers();
+
+        if (getIntent().hasExtra("com.azhukovski.geomusic.User")){
+            Bundle bundle = getIntent().getExtras();
+            currentUser = bundle.getParcelable("com.azhukovski.geomusic.User");
+        }
         fillUserList();
     }
 
@@ -74,7 +89,9 @@ public class UserListActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         User[] users = gson.fromJson(response.toString(), User[].class);
-
+                        users = setCurrentUserForOtherUsers(users, currentUser);
+                        users = removeCurrentUserFromList(users, currentUser);
+                        Arrays.sort(users);
                         usersAdapter = new ArrayAdapter<User>(activityContext, android.R.layout.simple_list_item_1, users);
                         usersList.setAdapter(usersAdapter);
                         System.out.println(users);
@@ -86,6 +103,25 @@ public class UserListActivity extends AppCompatActivity {
             }
         });
         queue.add(stringRequest);
+    }
+    private User[] setCurrentUserForOtherUsers(User[] users, User currentUser){
+        for (int i = 0; i < users.length; i++) {
+            users[i].currentUser = currentUser;
+        }
+        return users;
+    }
+
+    private User[] removeCurrentUserFromList(User[] users, final User currentUser){
+        ArrayList<User> list = new ArrayList<>(Arrays.asList(users));
+        for (int i = 0; i < users.length; i++) {
+            if(users[i].id.equals(currentUser.id)){
+                list.remove(i);
+                users = new User[list.size()];
+                return list.toArray(users);
+
+            }
+        }
+        return users;
     }
 
     protected void fillMenu() {
